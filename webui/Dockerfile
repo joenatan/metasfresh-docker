@@ -1,6 +1,8 @@
 FROM metasfresh/metasfresh-webui:5.158
 
 COPY sources/configs/config.js /opt/metasfresh-webui-frontend/dist/
+COPY sources/start_webui.sh /
+RUN ["chmod", "+x", "start_webui.sh"]
 
 #add apache config
 COPY sources/configs/metasfresh_webui.conf /etc/apache2/sites-available/

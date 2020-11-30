@@ -65,20 +65,33 @@ services:
 
   webui:
     build: webui
+    env_file:
+      - .env
     depends_on: 
       - webapi
-    ports:
-      - "80:80"
-      - "443:443"
+    #ports:
+    #  - "80:80"
+    #  - "443:443"
+    expose:
+      - "80"
+      - "443"
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     #uncomment and set to URL where metasfresh will be available from browsers
-    #environment:
-      #- WEBAPI_URL=http://example.com:8080
+    environment:
+      - WEBAPI_URL=https://${FQDN}
     networks: 
       - metasrefresh_network
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webui.rule=Host(`${FQDN}`)"
+      - "traefik.http.routers.webui.tls=true"
+      - "traefik.http.routers.webui.tls.certresolver=le"
+      - "traefik.http.routers.webui.entrypoints=websecure"
+
 
   rabbitmq:
     build: rabbitmq
